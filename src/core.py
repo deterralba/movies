@@ -16,19 +16,27 @@ class Graph:
     def __init__(self):
         self.nodes = []
 
+    @property
+    def links(self):
+        return list(set(link for node in self.nodes for link in node.links))
+
     def save_node(self, node):
         # add to graph the node
         # check for duplication
         # offer to merge (?)
         # add the links, create them as lone node if necessary, or add the links if not lone_nodese
 
+        if [n for n in self.nodes if n.name == node.name]:
+            raise ValueError('Trying to duplicate a node! Name already taken.')
+            # we check each time that the name is not taken because the name can be changed
         if node not in self.nodes:
-            if [n for n in self.nodes if n.name == node.name]:
-                raise ValueError('Trying to duplicate a node! Name already taken.')
             self.nodes.append(node)
             print('Node {} added to the graph'.format(node))
 
         connected_nodes = node.get_specific_connected_nodes()
+        for connected_node in connected_nodes:
+            if connected_node not in self.nodes:
+                raise ValueError('Node {} is unknown!'.format(connected_node))
         old_connected_nodes = [link.to_node for link in node.links_to_others]
         for old_connected_node in old_connected_nodes:
             if old_connected_node not in connected_nodes:
@@ -116,6 +124,22 @@ class Document(Node):
         super().__init__(name)
         self.comment = ''
 
+    def get_specific_connected_nodes(self):
+        possible_nodes_names = self.parse_comment()
+        existing_nodes = []
+        for node_name in possible_nodes_names:
+            node = graph.get_node(node_name)
+            if node is not None:
+                existing_nodes.append(node)
+        return existing_nodes
+
+    def parse_comment(self):
+        nodes_names = ['node 1', 'kaboom']
+        print(nodes_names)
+        return nodes_names
+
+
+class TestNode(Node):
     def get_specific_connected_nodes(self):
         node_name = input('> ')
         l = []
