@@ -26,7 +26,7 @@ class Graph:
         # offer to merge (?)
         # add the links, create them as lone node if necessary, or add the links if not lone_nodese
 
-        if [n for n in self.nodes if n.name == node.name]:
+        if [n for n in self.nodes if node != n and n.name == node.name]:
             raise ValueError('Trying to duplicate a node! Name already taken.')
             # we check each time that the name is not taken because the name can be changed
         if node not in self.nodes:
@@ -119,48 +119,6 @@ class Link:
         self.from_node.links.remove(self)
         self.to_node.links.remove(self)
 
-class Document(Node):
-    def __init__(self, name):
-        super().__init__(name)
-        self.comment = ''
-
-    def get_specific_connected_nodes(self):
-        possible_nodes_names = self.parse_comment()
-        existing_nodes = []
-        for node_name in possible_nodes_names:
-            node = graph.get_node(node_name)
-            if node is not None:
-                existing_nodes.append(node)
-        return existing_nodes
-
-    def parse_comment(self):
-        nodes_names = ['node 1', 'kaboom']
-        print(nodes_names)
-        return nodes_names
-
-
-class TestNode(Node):
-    def get_specific_connected_nodes(self):
-        node_name = input('> ')
-        l = []
-        print('Existing nodes: {}'.format(DataBase().graph.nodes))
-        while node_name != '':
-            node = graph.get_node(node_name)
-            if node is not None:
-                l.append(node)
-            else:
-                print('Node could not be found')
-            node_name = input('> ')
-        return l
-
-class Film(Document):
-    pass
-
-class Book(Document):
-    pass
-
-class Article(Document):
-    pass
 
 db = DataBase()
 graph = Graph()
