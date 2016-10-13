@@ -26,9 +26,9 @@ class Graph:
         # offer to merge (?)
         # add the links, create them as lone node if necessary, or add the links if not lone_nodese
 
-        if [n for n in self.nodes if node != n and n.name == node.name]:
-            raise ValueError('Trying to duplicate a node! Name already taken.')
-            # we check each time that the name is not taken because the name can be changed
+        if [n for n in self.nodes if node != n and (n.name == node.name or n.slug == node.slug)]:
+            raise ValueError('Trying to duplicate a node! Name or slug already taken.')
+            # we check each time that the name and slug are not taken because the name and slug can be changed
         if node not in self.nodes:
             self.nodes.append(node)
             print('Node {} added to the graph'.format(node))
@@ -46,12 +46,12 @@ class Graph:
             if connected_node not in old_connected_nodes:
                 node.link_to(connected_node)
 
-    def get_node(self, name):
-        l = [node for node in self.nodes if node.name == name]
+    def get_node_by_slug(self, slug):
+        l = [node for node in self.nodes if node.slug == slug]
         if len(l) == 1:
             return l[0]
         elif len(l) > 1:
-            raise ValueError('Several nodes with the same name!')
+            raise ValueError('Several nodes with the same slug!')
         else:
             return None
 
@@ -71,7 +71,7 @@ class Node:
         return slug
 
     def __repr__(self):
-        return '<Node \'{}\'>'.format(self.name)
+        return '<Node \'{}\'>'.format(self.slug)
 
     @property
     def links_to_others(self):
