@@ -1,4 +1,4 @@
-import pickle
+import pickle, re
 
 class DataBase:
     def __init__(self):
@@ -56,9 +56,19 @@ class Graph:
             return None
 
 class Node:
-    def __init__(self, name):
+    def __init__(self, name, slug=None):
         self.name = name
         self.links = []
+        self.slug = self.slugify(slug or name)
+
+    @staticmethod
+    def slugify(name):
+        slug = name.strip()
+        slug = slug.lower()
+        slug = re.sub(r'[\W_]', '-', slug)  # replace all non alphanumeric and _ with -
+        slug = re.sub(r'-+', '-', slug)  # remplace ----- to -
+        slug = slug.strip('-')
+        return slug
 
     def __repr__(self):
         return '<Node \'{}\'>'.format(self.name)
